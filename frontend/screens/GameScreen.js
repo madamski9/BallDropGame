@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 
 const GameScreen = ({ navigation }) => {
     const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: 100, y: 100 }));   
-    const gravity = 0.5; // stala wartosc grawitacji
+    const gravity = 0; // stala wartosc grawitacji
     const [ obstacles, setObstacles ] = useState([
-        { x: -10, y: -300, width: 10, height: 200 },
-        { x: -80, y: 0, width: 400, height: 10 }
+        { x: -110, y: -400, width: 10, height: 80 },
+        { x: 40, y: -400, width: 10, height: 150 },
+        { x: -200, y: -190, width: 100, height: 10 },
+        { x: -110, y: -260, width: 80, height: 10 },
+        { x: -30, y: -320, width: 10, height: 220 },
+        { x: -20, y: -190, width: 140, height: 10 },
+        { x: 110, y: -290, width: 10, height: 100 },
     ]);
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
@@ -25,6 +30,7 @@ const GameScreen = ({ navigation }) => {
             let newX = ballPosition.x._value + x * 10;
             let newY = ballPosition.y._value - y * 10 + gravity;
             
+            // ograniczenie ruchu kulki
             if (newX < -width / 2 + 10) newX = -width / 2 + 10;
             if (newX > width / 2 - 12) newX = width / 2 - 12; 
             if (newY < -height / 2 + 20) newY = -height / 2 + 20;
@@ -32,16 +38,15 @@ const GameScreen = ({ navigation }) => {
 
             for (let obstacle of obstacles) {
                 if (checkCollision(newX, newY, obstacle)) {
-                  // Reakcja na kolizję (blokowanie ruchu tylko w kierunku kolizji)
                   if (newY + 25 > obstacle.y && ballPosition.y._value + 25 <= obstacle.y) {
-                    newY = ballPosition.y._value; // Blokuj ruch w osi Y od dołu
+                    newY = ballPosition.y._value; 
                   } else if (newY < obstacle.y + obstacle.height && ballPosition.y._value >= obstacle.y + obstacle.height) {
-                    newY = ballPosition.y._value; // Blokuj ruch w osi Y od góry
+                    newY = ballPosition.y._value;
                   }
                   if (newX + 25 > obstacle.x && ballPosition.x._value + 25 <= obstacle.x) {
-                    newX = ballPosition.x._value; // Blokuj ruch w osi X od prawej
+                    newX = ballPosition.x._value;
                   } else if (newX < obstacle.x + obstacle.width && ballPosition.x._value >= obstacle.x + obstacle.width) {
-                    newX = ballPosition.x._value; // Blokuj ruch w osi X od lewej
+                    newX = ballPosition.x._value; 
                   }
                 }
               }
@@ -54,9 +59,6 @@ const GameScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Text>Wróć do strony głównej</Text>
-        </TouchableOpacity>
         <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
         {obstacles.map((obstacle, index) => (
         <View
