@@ -5,16 +5,20 @@ import { Accelerometer } from 'expo-sensors';
 const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 
 const GameScreen = ({ navigation }) => {
-    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: 100, y: 100 }));   
+    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));   
     const gravity = 0; // stala wartosc grawitacji
     const [ obstacles, setObstacles ] = useState([
         { x: -110, y: -400, width: 10, height: 80 },
         { x: 40, y: -400, width: 10, height: 150 },
-        { x: -200, y: -190, width: 100, height: 10 },
+        { x: -200, y: -185, width: 100, height: 10 },
         { x: -110, y: -260, width: 80, height: 10 },
         { x: -30, y: -320, width: 10, height: 220 },
         { x: -20, y: -190, width: 140, height: 10 },
-        { x: 110, y: -290, width: 10, height: 100 },
+        { x: 110, y: -290, width: 10, height: 270 },
+        { x: -110, y: -110, width: 150, height: 10 },
+        { x: -30, y: -30, width: 10, height: 100 },
+        { x: 120, y: -260, width: 100, height: 10 },
+        { x: -30, y: 15, width: 80, height: 10 },
     ]);
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
