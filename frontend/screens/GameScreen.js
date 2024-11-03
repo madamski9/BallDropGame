@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 
-const GameScreen = ({ navigation }) => {
-    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: 0, y: 0 }));   
-    const gravity = 3; // stala wartosc grawitacji
-    const [ obstacles, setObstacles ] = useState([
-        { x: 50, y: 500, width: 200, height: 10 }
-    ]);
+const { width, height } = Dimensions.get('window');
 
-    const checkCollision = (ballX, ballY, obstacle) => {        
+const GameScreen = ({ navigation }) => {
+    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: 100, y: 100 }));   
+    const gravity = 0.5; // stala wartosc grawitacji
+    const [ obstacles, setObstacles ] = useState([
+        { x: -10, y: -300, width: 10, height: 200 },
+        { x: -80, y: 0, width: 400, height: 10 }
+    ]);
+    const checkCollision = (ballX, ballY, obstacle) => { 
         return (
           ballX < obstacle.x + obstacle.width &&
           ballX + 25 > obstacle.x && 
@@ -22,25 +24,33 @@ const GameScreen = ({ navigation }) => {
         const subscription = Accelerometer.addListener(({ x, y, z }) => {
             let newX = ballPosition.x._value + x * 10;
             let newY = ballPosition.y._value - y * 10 + gravity;
-
-            if (newX < -173) newX = -173;
-            if (newX > 173) newX = 173; 
-            if (newY > 386) newY = 386;
-            if (newY < -386) newY = -386; 
             
+            if (newX < -width / 2 + 10) newX = -width / 2 + 10;
+            if (newX > width / 2 - 12) newX = width / 2 - 12; 
+            if (newY < -height / 2 + 20) newY = -height / 2 + 20;
+            if (newY > height / 2 - 25) newY = height / 2 - 25; 
+
             for (let obstacle of obstacles) {
                 if (checkCollision(newX, newY, obstacle)) {
-                  newX = ballPosition.x._value;
-                  newY = ballPosition.y._value;
-                  break;
+                  // Reakcja na kolizję (blokowanie ruchu tylko w kierunku kolizji)
+                  if (newY + 25 > obstacle.y && ballPosition.y._value + 25 <= obstacle.y) {
+                    newY = ballPosition.y._value; // Blokuj ruch w osi Y od dołu
+                  } else if (newY < obstacle.y + obstacle.height && ballPosition.y._value >= obstacle.y + obstacle.height) {
+                    newY = ballPosition.y._value; // Blokuj ruch w osi Y od góry
+                  }
+                  if (newX + 25 > obstacle.x && ballPosition.x._value + 25 <= obstacle.x) {
+                    newX = ballPosition.x._value; // Blokuj ruch w osi X od prawej
+                  } else if (newX < obstacle.x + obstacle.width && ballPosition.x._value >= obstacle.x + obstacle.width) {
+                    newX = ballPosition.x._value; // Blokuj ruch w osi X od lewej
+                  }
                 }
-            }
+              }
 
             ballPosition.setValue({ x: newX, y: newY });
         });
       
         return () => subscription.remove();
-    }, [ ballPosition ]);
+    }, [ ballPosition, obstacles ]);
 
     return (
         <View style={styles.container}>
@@ -54,10 +64,10 @@ const GameScreen = ({ navigation }) => {
             style={[
                 styles.obstacle,
                 {
-                left: obstacle.x,
-                top: obstacle.y,
-                width: obstacle.width,
-                height: obstacle.height,
+                    left: width / 2 + obstacle.x - 12,
+                    top: height / 2 + obstacle.y - 12,
+                    width: obstacle.width,
+                    height: obstacle.height,
                 },
             ]}
             />
