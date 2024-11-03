@@ -19,9 +19,9 @@ const GameScreen = ({ navigation }) => {
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
           ballX < obstacle.x + obstacle.width &&
-          ballX + 25 > obstacle.x && 
+          ballX + 20 > obstacle.x && 
           ballY < obstacle.y + obstacle.height &&
-          ballY + 25 > obstacle.y 
+          ballY + 20 > obstacle.y 
         );
     };
 
@@ -34,16 +34,16 @@ const GameScreen = ({ navigation }) => {
             if (newX < -width / 2 + 10) newX = -width / 2 + 10;
             if (newX > width / 2 - 12) newX = width / 2 - 12; 
             if (newY < -height / 2 + 20) newY = -height / 2 + 20;
-            if (newY > height / 2 - 25) newY = height / 2 - 25; 
+            if (newY > height / 2 - 20) newY = height / 2 - 20; 
 
             for (let obstacle of obstacles) {
                 if (checkCollision(newX, newY, obstacle)) {
-                  if (newY + 25 > obstacle.y && ballPosition.y._value + 25 <= obstacle.y) {
+                  if (newY + 20 > obstacle.y && ballPosition.y._value + 20 <= obstacle.y) {
                     newY = ballPosition.y._value; 
                   } else if (newY < obstacle.y + obstacle.height && ballPosition.y._value >= obstacle.y + obstacle.height) {
                     newY = ballPosition.y._value;
                   }
-                  if (newX + 25 > obstacle.x && ballPosition.x._value + 25 <= obstacle.x) {
+                  if (newX + 20 > obstacle.x && ballPosition.x._value + 20 <= obstacle.x) {
                     newX = ballPosition.x._value;
                   } else if (newX < obstacle.x + obstacle.width && ballPosition.x._value >= obstacle.x + obstacle.width) {
                     newX = ballPosition.x._value; 
@@ -66,7 +66,7 @@ const GameScreen = ({ navigation }) => {
             style={[
                 styles.obstacle,
                 {
-                    left: width / 2 + obstacle.x - 12,
+                    left: width / 2 + obstacle.x - 10,
                     top: height / 2 + obstacle.y - 12,
                     width: obstacle.width,
                     height: obstacle.height,
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     ball: {
-        width: 25,
-        height: 25,
+        width: 18,
+        height: 18,
         backgroundColor: 'black',
         borderRadius: 25,
         position: 'absolute',
