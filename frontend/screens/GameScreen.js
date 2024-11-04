@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 const GameScreen = ({ navigation }) => {
     const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));   
     const gravity = 0; // stala wartosc grawitacji
-    const [ obstacles, setObstacles ] = useState([
+    const [ obstacles, setObstacles ] = useState([  // labirynt
         { x: -110, y: -400, width: 10, height: 80 },
         { x: 40, y: -400, width: 10, height: 150 },
         { x: -200, y: -185, width: 100, height: 10 },
@@ -38,6 +38,29 @@ const GameScreen = ({ navigation }) => {
         { x: 40, y: 360, width: 200, height: 10 },
         { x: -180, y: -350, width: 40, height: 10 },
     ]);
+    const [ holes, setHoles ] = useState([
+        { x: -10, y: 10, width: 18, height: 18 },
+        { x: -70, y: -300, width: 18, height: 18 },
+        { x: -160, y: -290, width: 18, height: 18 },
+        { x: 60, y: -300, width: 18, height: 18 },
+        { x: 150, y: -350, width: 18, height: 18 },
+        { x: 150, y: -150, width: 18, height: 18 },
+        { x: 140, y: 40, width: 18, height: 18 },
+        { x: 60, y: -50, width: 18, height: 18 },
+        { x: 0, y: -150, width: 18, height: 18 },
+        { x: -90, y: -80, width: 18, height: 18 },
+        { x: -160, y: -40, width: 18, height: 18 },
+        { x: -70, y: -150, width: 18, height: 18 },
+        { x: -70, y: 150, width: 18, height: 18 },
+        { x: 70, y: 150, width: 18, height: 18 },
+        { x: -80, y: 10, width: 18, height: 18 },
+        { x: -165, y: 190, width: 18, height: 18 },
+        { x: -90, y: 330, width: 18, height: 18 },
+        { x: -10, y: 330, width: 18, height: 18 },
+        { x: 100, y: 310, width: 18, height: 18 },
+        { x: 20, y: 250, width: 18, height: 18 },
+    ])
+
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
           ballX < obstacle.x + obstacle.width &&
@@ -72,32 +95,53 @@ const GameScreen = ({ navigation }) => {
                   }
                 }
               }
+            
+            for (let hole of holes) {
+                if (checkCollision(newX, newY, hole)) {
+                    newX = -150;
+                    newY = -390;
+                }
+            }
 
             ballPosition.setValue({ x: newX, y: newY });
         });
       
         return () => subscription.remove();
-    }, [ ballPosition, obstacles ]);
+    }, [ ballPosition, obstacles, holes ]);
 
     return (
         <View style={styles.container}>
-        <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
-        {obstacles.map((obstacle, index) => (
-        <View
-            key={index}
-            style={[
-                styles.obstacle,
-                {
-                    left: width / 2 + obstacle.x - 10,
-                    top: height / 2 + obstacle.y - 12,
-                    width: obstacle.width,
-                    height: obstacle.height,
-                },
-            ]}
-            />
-        ))}
+            <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
+            {obstacles.map((obstacle, index) => (
+            <View
+                key={index}
+                style={[
+                    styles.obstacle,
+                    {
+                        left: width / 2 + obstacle.x - 10,
+                        top: height / 2 + obstacle.y - 12,
+                        width: obstacle.width,
+                        height: obstacle.height,
+                    },
+                ]}
+                />
+            ))}
+            {holes.map((hole, index) => (
+            <View
+                key={index}
+                style={[
+                    styles.hole,
+                    {
+                        left: width / 2 + hole.x - 17,
+                        top: height / 2 + hole.y - 22,
+                        width: hole.width + 15,
+                        height: hole.height + 15,
+                    },
+                ]}
+                />
+            ))}
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -110,13 +154,18 @@ const styles = StyleSheet.create({
     ball: {
         width: 18,
         height: 18,
-        backgroundColor: 'black',
+        backgroundColor: 'red',
         borderRadius: 25,
         position: 'absolute',
     },
     obstacle: {
         backgroundColor: 'black',
         position: 'absolute',
+    },
+    hole: {
+        position: 'absolute',
+        backgroundColor: 'black',
+        borderRadius: 50,
     }
 });
 
