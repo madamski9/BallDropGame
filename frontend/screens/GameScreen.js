@@ -59,7 +59,12 @@ const GameScreen = ({ navigation }) => {
         { x: -10, y: 330, width: 18, height: 18 },
         { x: 100, y: 310, width: 18, height: 18 },
         { x: 20, y: 250, width: 18, height: 18 },
+        { x: 160, y: 230, width: 18, height: 18 },
     ])
+
+    const [ points, setPoints ] = useState([
+        { x: 100, y: 230, width: 18, height: 18 }
+    ]);
 
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
@@ -103,11 +108,19 @@ const GameScreen = ({ navigation }) => {
                 }
             }
 
+            let score = 0
+            for (let point of points) {
+                if (checkCollision(newX, newY, point)) {
+                    score += 1
+                    console.log(score)
+                }
+            }
+
             ballPosition.setValue({ x: newX, y: newY });
         });
       
         return () => subscription.remove();
-    }, [ ballPosition, obstacles, holes ]);
+    }, [ ballPosition, obstacles, holes, points ]);
 
     return (
         <View style={styles.container}>
@@ -140,6 +153,20 @@ const GameScreen = ({ navigation }) => {
                 ]}
                 />
             ))}
+            {points.map((point, index) => (
+                <View
+                key={index}
+                style={[
+                    styles.points,
+                    {
+                    left: width / 2 + point.x - 17,
+                    top: height / 2 + point.y - 22,
+                    width: point.width + 15,
+                    height: point.height + 15,
+                    },
+                ]}
+                />
+            ))}
         </View>
     )
 }
@@ -165,6 +192,11 @@ const styles = StyleSheet.create({
     hole: {
         position: 'absolute',
         backgroundColor: 'black',
+        borderRadius: 50,
+    },
+    points: {
+        position: 'absolute',
+        backgroundColor: 'green',
         borderRadius: 50,
     }
 });
