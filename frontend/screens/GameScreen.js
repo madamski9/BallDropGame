@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'; 
-import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions, Alert } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 
 const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
@@ -78,6 +78,11 @@ const GameScreen = ({ navigation }) => {
         { x: 160, y: -200, width: 13, height: 13 },
     ]);
 
+    const [ wonGame, setWonGame ] = useState([
+        { x: -20, y: 390, width: 60, height: 50 }
+    ]);
+
+    // funkcja sprawdzajaca kolizje
     const checkCollision = (ballX, ballY, obstacle) => { 
         return (
           ballX < obstacle.x + obstacle.width &&
@@ -92,12 +97,13 @@ const GameScreen = ({ navigation }) => {
             let newX = ballPosition.x._value + x * 10;
             let newY = ballPosition.y._value - y * 10 + gravity;
             
-            // ograniczenie ruchu kulki
+            // sprawdzenie granic ekranu
             if (newX < -width / 2 + 10) newX = -width / 2 + 10;
             if (newX > width / 2 - 12) newX = width / 2 - 12; 
             if (newY < -height / 2 + 20) newY = -height / 2 + 20;
             if (newY > height / 2 - 20) newY = height / 2 - 20; 
 
+            // logika kolizji z murami
             for (let obstacle of obstacles) {
                 if (checkCollision(newX, newY, obstacle)) {
                   if (newY + 20 > obstacle.y && ballPosition.y._value + 20 <= obstacle.y) {
@@ -113,6 +119,7 @@ const GameScreen = ({ navigation }) => {
                 }
               }
             
+            // logika przegranej
             for (let hole of holes) {
                 if (checkCollision(newX, newY, hole)) {
                     newX = -150;
@@ -120,6 +127,7 @@ const GameScreen = ({ navigation }) => {
                 }
             }
 
+            // logika punktowania
             let newScore = [ ...points ]
             for (let point of points) {
                 if (checkCollision(newX, newY, point)) {
@@ -130,11 +138,19 @@ const GameScreen = ({ navigation }) => {
             }
             setPoints(newScore)
 
+            // wygrana
+            for (let won of wonGame) {
+                if (checkCollision(newX, newY, won)) {
+                    navigation.navigate('WonScreen', { score: score })
+                    return
+                }
+            }
+
             ballPosition.setValue({ x: newX, y: newY });
         });
       
         return () => subscription.remove();
-    }, [ ballPosition, obstacles, holes, points ]);
+    }, [ ballPosition, obstacles, holes, points, wonGame ]);
 
     return (
         <View style={styles.container}>
@@ -142,6 +158,20 @@ const GameScreen = ({ navigation }) => {
                 <Text style={styles.score}>Score: {score}</Text>
             </View>
             <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
+            {wonGame.map((wonGame, index) => (
+            <View
+                style={[
+                    key={index},
+                    styles.wonGame,
+                    {
+                        left: width / 2 + wonGame.x - 10,
+                        top: height / 2 + wonGame.y - 12,
+                        width: wonGame.width,
+                        height: wonGame.height,
+                    },
+                ]}
+            />
+            ))}
             {obstacles.map((obstacle, index) => (
             <View
                 key={index}
@@ -223,6 +253,10 @@ const styles = StyleSheet.create({
         color: "black",
         fontSize: 20,
         transform: [{ rotate: '90deg' }],
+    },
+    wonGame: {
+        position: 'absolute',
+        backgroundColor: 'green',
     }
 });
 
