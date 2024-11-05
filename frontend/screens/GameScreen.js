@@ -5,10 +5,8 @@ import { Accelerometer } from 'expo-sensors';
 const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 
 const GameScreen = ({ navigation }) => {
-    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));    // pozycja kulki
-    const gravity = 0; // stala wartosc grawitacji
-    const [ score, setScore ] = useState(0) // punkty
-    const [ obstacles, setObstacles ] = useState([  // labirynt
+    // ustawienia wszystkich objektow na planszy
+    const initialObstacles = [
         { x: -110, y: -400, width: 10, height: 80 },
         { x: 40, y: -400, width: 10, height: 150 },
         { x: -200, y: -185, width: 100, height: 10 },
@@ -38,8 +36,8 @@ const GameScreen = ({ navigation }) => {
         { x: 40, y: 360, width: 10, height: 90 },
         { x: 40, y: 360, width: 200, height: 10 },
         { x: -180, y: -350, width: 40, height: 10 },
-    ]);
-    const [ holes, setHoles ] = useState([   // dziury
+    ]
+    const initialHoles = [
         { x: -10, y: 10, width: 18, height: 18 },
         { x: -70, y: -300, width: 18, height: 18 },
         { x: -160, y: -290, width: 18, height: 18 },
@@ -61,9 +59,8 @@ const GameScreen = ({ navigation }) => {
         { x: 100, y: 310, width: 18, height: 18 },
         { x: 20, y: 250, width: 18, height: 18 },
         { x: 160, y: 230, width: 18, height: 18 },
-    ])
-
-    const [ points, setPoints ] = useState([  // dodatkowe punkty
+    ]
+    const initialPoints = [ 
         { x: -140, y: -220, width: 18, height: 18 },
         { x: 60, y: -220, width: 15, height: 15 },
         { x: 175, y: -370, width: 5, height: 5 },
@@ -76,11 +73,17 @@ const GameScreen = ({ navigation }) => {
         { x: -50, y: 240, width: 15, height: 15 },
         { x: 150, y: 155, width: 10, height: 10 },
         { x: 160, y: -200, width: 13, height: 13 },
-    ]);
-
+    ]
     const [ wonGame, setWonGame ] = useState([
         { x: -20, y: 390, width: 60, height: 50 }
     ]);
+
+    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));    // pozycja kulki
+    const gravity = 0; // stala wartosc grawitacji
+    const [ score, setScore ] = useState(0) // punkty
+    const [ obstacles, setObstacles ] = useState(initialObstacles); // mur
+    const [ holes, setHoles ] = useState(initialHoles) // dziury
+    const [ points, setPoints ] = useState(initialPoints); // punkty
 
     // funkcja sprawdzajaca kolizje
     const checkCollision = (ballX, ballY, obstacle) => { 
@@ -91,6 +94,14 @@ const GameScreen = ({ navigation }) => {
           ballY + 20 > obstacle.y 
         );
     };
+
+    const resetGame = () => {
+        setBallPosition(new Animated.ValueXY({ x: -150, y: -390 }))
+        setScore(0)
+        setObstacles(initialObstacles)
+        setHoles(initialHoles)
+        setPoints(initialPoints)
+    }
 
     useEffect(() => {
         const subscription = Accelerometer.addListener(({ x, y, z }) => {
@@ -122,8 +133,8 @@ const GameScreen = ({ navigation }) => {
             // logika przegranej
             for (let hole of holes) {
                 if (checkCollision(newX, newY, hole)) {
-                    newX = -150;
-                    newY = -390;
+                    resetGame()
+                    return
                 }
             }
 
