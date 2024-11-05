@@ -141,15 +141,14 @@ const GameScreen = ({ navigation }) => {
             }
 
             // logika punktowania
-            let newScore = [ ...points ]
-            for (let point of points) {
+            let newPoints = points.filter(point => {
                 if (checkCollision(newX, newY, point)) {
-                    point.width = -100
-                    point.height = -100
                     setScore(prevScore => prevScore + 1)
+                    return false
                 }
-            }
-            setPoints(newScore)
+                return true
+            });
+            setPoints(newPoints);
 
             // wygrana
             for (let won of wonGame) {
