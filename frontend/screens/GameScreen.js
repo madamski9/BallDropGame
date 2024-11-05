@@ -5,8 +5,9 @@ import { Accelerometer } from 'expo-sensors';
 const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 
 const GameScreen = ({ navigation }) => {
-    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));   
+    const [ ballPosition, setBallPosition ] = useState(new Animated.ValueXY({ x: -150, y: -390 }));    // pozycja kulki
     const gravity = 0; // stala wartosc grawitacji
+    const [ score, setScore ] = useState(0) // punkty
     const [ obstacles, setObstacles ] = useState([  // labirynt
         { x: -110, y: -400, width: 10, height: 80 },
         { x: 40, y: -400, width: 10, height: 150 },
@@ -38,7 +39,7 @@ const GameScreen = ({ navigation }) => {
         { x: 40, y: 360, width: 200, height: 10 },
         { x: -180, y: -350, width: 40, height: 10 },
     ]);
-    const [ holes, setHoles ] = useState([
+    const [ holes, setHoles ] = useState([   // dziury
         { x: -10, y: 10, width: 18, height: 18 },
         { x: -70, y: -300, width: 18, height: 18 },
         { x: -160, y: -290, width: 18, height: 18 },
@@ -62,8 +63,19 @@ const GameScreen = ({ navigation }) => {
         { x: 160, y: 230, width: 18, height: 18 },
     ])
 
-    const [ points, setPoints ] = useState([
-        { x: 100, y: 230, width: 18, height: 18 }
+    const [ points, setPoints ] = useState([  // dodatkowe punkty
+        { x: -140, y: -220, width: 18, height: 18 },
+        { x: 60, y: -220, width: 15, height: 15 },
+        { x: 175, y: -370, width: 5, height: 5 },
+        { x: -10, y: -168, width: 6, height: 6 },
+        { x: -155, y: 40, width: 22, height: 22 },
+        { x: -85, y: 60, width: 15, height: 15 },
+        { x: -50, y: -5, width: 5, height: 5 },
+        { x: -55, y: 305, width: 10, height: 10 },
+        { x: 150, y: 305, width: 10, height: 10 },
+        { x: -50, y: 240, width: 15, height: 15 },
+        { x: 150, y: 155, width: 10, height: 10 },
+        { x: 160, y: -200, width: 13, height: 13 },
     ]);
 
     const checkCollision = (ballX, ballY, obstacle) => { 
@@ -108,13 +120,15 @@ const GameScreen = ({ navigation }) => {
                 }
             }
 
-            let score = 0
+            let newScore = [ ...points ]
             for (let point of points) {
                 if (checkCollision(newX, newY, point)) {
-                    score += 1
-                    console.log(score)
+                    point.width = -100
+                    point.height = -100
+                    setScore(prevScore => prevScore + 1)
                 }
             }
+            setPoints(newScore)
 
             ballPosition.setValue({ x: newX, y: newY });
         });
@@ -124,6 +138,9 @@ const GameScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <View>
+                <Text style={styles.score}>Score: {score}</Text>
+            </View>
             <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
             {obstacles.map((obstacle, index) => (
             <View
@@ -198,6 +215,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: 'green',
         borderRadius: 50,
+    },
+    score: {
+        position: 'absolute',
+        left: 115,
+        top: -50,
+        color: "black",
+        fontSize: 20,
+        transform: [{ rotate: '90deg' }],
     }
 });
 
