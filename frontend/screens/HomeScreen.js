@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from 'react'; 
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import React from 'react'; 
+import { Text, View, TouchableOpacity } from 'react-native';
+import styles from '../styles/HomeScreenStyles';
 
 const HomeScreen = ({ navigation }) => {
-    const myIp = "192.168.0.22:5233"; 
-    const [ message, setMessage ] = useState('');
-  
-    const getApi = async () => {
-      try {
-        const response = await axios.get(`http://${myIp}/api/helloworld`);
-        console.log(response.data);
-        setMessage(response.data); 
-      } catch (error) {
-        console.error("Wystąpił błąd: ", error);
-      }
-    };
-  
-    useEffect(() => {
-      getApi();
-    }, []); 
   
     return (
       <View style={styles.container}>
@@ -36,33 +20,3 @@ const HomeScreen = ({ navigation }) => {
   }
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: 'white',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    startButton: {
-      width: 200,
-      height: 50,
-      backgroundColor: 'black',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 10,
-    },
-    startFont: {
-      color: 'white',
-      fontSize: 20,
-    },
-    header: {
-        position: 'absolute',
-        height: 50,
-        alignItems: 'center',
-        top: 100,
-    },
-    headerFont: {
-        fontSize: 35,
-    }
-  });

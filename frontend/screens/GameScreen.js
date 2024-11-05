@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
-import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions, Alert } from 'react-native';
+import { Text, View, Animated, Dimensions } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
+import styles from '../styles/GameScreenStyles';
 
 const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 
@@ -95,6 +96,7 @@ const GameScreen = ({ navigation }) => {
         );
     };
 
+    // funkcja resetujaca gre
     const resetGame = () => {
         setBallPosition(new Animated.ValueXY({ x: -150, y: -390 }))
         setScore(0)
@@ -228,47 +230,5 @@ const GameScreen = ({ navigation }) => {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    ball: {
-        width: 18,
-        height: 18,
-        backgroundColor: 'red',
-        borderRadius: 25,
-        position: 'absolute',
-    },
-    obstacle: {
-        backgroundColor: 'black',
-        position: 'absolute',
-    },
-    hole: {
-        position: 'absolute',
-        backgroundColor: 'black',
-        borderRadius: 50,
-    },
-    points: {
-        position: 'absolute',
-        backgroundColor: 'green',
-        borderRadius: 50,
-    },
-    score: {
-        position: 'absolute',
-        left: 115,
-        top: -50,
-        color: "black",
-        fontSize: 20,
-        transform: [{ rotate: '90deg' }],
-    },
-    wonGame: {
-        position: 'absolute',
-        backgroundColor: 'green',
-    }
-});
 
 export default GameScreen;
