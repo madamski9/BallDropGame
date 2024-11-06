@@ -171,36 +171,36 @@ const GameScreen = ({ navigation }) => {
             </View>
             <Animated.View style={[styles.ball, { transform: ballPosition.getTranslateTransform() }]} />
             {wonGame.map((wonGame, index) => (
-            <View
-                style={[
-                    key={index},
-                    styles.wonGame,
-                    {
-                        left: width / 2 + wonGame.x - 10,
-                        top: height / 2 + wonGame.y - 12,
-                        width: wonGame.width,
-                        height: wonGame.height,
-                    },
-                ]}
-            />
-            ))}
-            {obstacles.map((obstacle, index) => (
-            <View
-                key={index}
-                style={[
-                    styles.obstacle,
-                    {
-                        left: width / 2 + obstacle.x - 10,
-                        top: height / 2 + obstacle.y - 12,
-                        width: obstacle.width,
-                        height: obstacle.height,
-                    },
-                ]}
+                <View
+                    key={`wonGame-${index}`}
+                    style={[
+                        styles.wonGame,
+                        {
+                            left: width / 2 + wonGame.x - 10,
+                            top: height / 2 + wonGame.y - 12,
+                            width: wonGame.width,
+                            height: wonGame.height,
+                        },
+                    ]}
                 />
             ))}
+            {obstacles.map((obstacle, index) => (
+                <View
+                    key={`obstacle-${index}`}
+                    style={[
+                        styles.obstacle,
+                        {
+                            left: width / 2 + obstacle.x - 10,
+                            top: height / 2 + obstacle.y - 12,
+                            width: obstacle.width,
+                            height: obstacle.height,
+                        },
+                    ]}
+                    />
+                ))}
             {holes.map((hole, index) => (
             <View
-                key={index}
+                key={`hole-${index}`}
                 style={[
                     styles.hole,
                     {
@@ -214,7 +214,7 @@ const GameScreen = ({ navigation }) => {
             ))}
             {points.map((point, index) => (
                 <View
-                key={index}
+                key={`point-${index}`}
                 style={[
                     styles.points,
                     {
