@@ -8,9 +8,9 @@ const { width, height } = Dimensions.get('window'); // pobranie wymiarow ekranu
 const GameScreen = ({ navigation }) => {
     // ustawienia wszystkich objektow na planszy
     const initialObstacles = [
-        { x: -110, y: -400, width: 10, height: 80 },
-        { x: 40, y: -400, width: 10, height: 150 },
-        { x: -200, y: -185, width: 100, height: 10 },
+        { x: -110, y: -430, width: 10, height: 110 },
+        { x: 40, y: -440, width: 10, height: 190 },
+        { x: -240, y: -185, width: 140, height: 10 },
         { x: -110, y: -260, width: 80, height: 10 },
         { x: -30, y: -320, width: 10, height: 220 },
         { x: -20, y: -190, width: 140, height: 10 },
@@ -32,11 +32,11 @@ const GameScreen = ({ navigation }) => {
         { x: -110, y: 360, width: 90, height: 10 },
         { x: -110, y: 360, width: 10, height: 60 },
         { x: -180, y: 406, width: 80, height: 10 },
-        { x: -180, y: 85, width: 80, height: 10 },
+        { x: -220, y: 85, width: 120, height: 10 },
         { x: -30, y: 285, width: 10, height: 140 },
         { x: 40, y: 360, width: 10, height: 90 },
         { x: 40, y: 360, width: 200, height: 10 },
-        { x: -180, y: -350, width: 40, height: 10 },
+        { x: -220, y: -350, width: 80, height: 10 },
     ]
     const initialHoles = [
         { x: -10, y: 10, width: 18, height: 18 },
