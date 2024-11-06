@@ -1,5 +1,7 @@
 # BallDrop Game
 
+### Alfa 1.0
+
 ## Description
 
 BallDrop is a mobile game built with JavaScript and React Native, designed for iOS and Android users. The goal of the game is to guide a ball through a maze by tilting the phone, avoiding black holes, and collecting points along the way. BallDrop showcases interactive gameplay with accelerometer-based controls for a fully immersive experience.
