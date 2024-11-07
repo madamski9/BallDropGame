@@ -32,7 +32,7 @@ In BallDrop, the objective is to complete the maze without falling into any blac
 - **Scoring**: Collect points scattered throughout the maze to boost your score and challenge yourself to achieve higher levels.
 
 ---
-### Images
+## Images
 <img src="https://github.com/user-attachments/assets/4f4e2c91-4c21-4e6d-bdc9-8308665bf62c" alt="IMG_2856" width="400" />   
 <br><br>
 <img src="https://github.com/user-attachments/assets/f3ce41ed-6970-44b0-9101-207063f31b50" alt="IMG_2856" width="400" />
